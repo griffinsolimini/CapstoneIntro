@@ -50,15 +50,33 @@ rl.question('Enter a web address:  ', (webAddress) => {
 	    textToSay = ""
 	    //Limit the number of words to be said to be 10 or less
 	    for(i = 0; i < keywordsArr.length && i < 10; i++) {
-		textToSay += keywordsArr[i].text + ' '
+		textToSay += keywordsArr[i].text + '. '
 	    }
 
 	    //Now send this string to Watson text to speech
-	    console.log('Generating audio file \'webpage.wav\'')
+	    console.log('Generating audio file \'keywords.wav\'')
 	    speech_params.text = textToSay
-	    text_to_speech.synthesize(speech_params).pipe(fs.createWriteStream('webpage.wav'));
-	    
+	    text_to_speech.synthesize(speech_params).pipe(fs.createWriteStream('keywords.wav'));
+	    console.log('Keywords file is generating!')
 	}
+    });
+
+    console.log('Getting the text...')
+    alchemy_language.text(alchemy_params, function (err, response) {
+        if (err) { console.log('error:', err); }
+        else {
+            textToSay = JSON.stringify(response, null, 2)
+            if (textToSay.length > textToSay.indexOf('\"text\":') + 7 + 250) {
+                textToSay = textToSay.slice(textToSay.indexOf('\"text\":') + 7, textToSay.indexOf('\"text\":') + 7 + 250)
+            }
+            else {
+                textToSay = textToSay.slice(textToSay.indexOf('\"text\":') + 7, textToSay.length)
+            }
+            console.log('Generating audio file \'text.wav\'')
+            speech_params.text = textToSay
+            text_to_speech.synthesize(speech_params).pipe(fs.createWriteStream('text.wav'));
+            console.log('Text file is generating!')
+        }
     });
    
     // Close the readline module 
