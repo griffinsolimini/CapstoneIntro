@@ -1,5 +1,8 @@
+// must run 'npm install watson-developer-cloud' and 'npm install alchemy-api'
+// for this code to work
+// Also run 'npm install readline'
+
 var watson = require('watson-developer-cloud');
-var TextToSpeechV1 = require('watson-developer-cloud/text-to-speech/v1');
 var fs = require('fs');
 var readline = require('readline')
 
@@ -9,17 +12,18 @@ const rl = readline.createInterface({
     output: process.stdout
 });
 
+// alchemy setup
 var alchemy_language = watson.alchemy_language({
-    api_key: '7fd6173ff60e2d8ba6a6ff58e1fe3ed02bbb2b05'
-});
+    api_key: '2436cd7fd981f4272c7de44b31b643bc5d4f6314'
+})
 
+// alchemy params setup
 var alchemy_params = {
-    extract: 'keywords',
     url: ''
 }    
 
-
-var text_to_speech = new TextToSpeechV1 ({
+// text to speech setup
+var text_to_speech = new watson.TextToSpeechV1 ({
     username: '630f556d-bab8-481c-b78e-75e0fdb228d3',
     password: 'DEbS5Py0Leri'
 });
@@ -30,11 +34,12 @@ var speech_params = {
     accept: 'audio/wav'
 };
 
-//Starting, ask for website
-var response
 
+//Starting
+//Ask for website
 rl.question('Enter a web address:  ', (webAddress) => {
     console.log('Getting the keywords...')
+
     //Use this web address with alchemy
     alchemy_params.url = webAddress
     alchemy_language.combined(alchemy_params, function (err, response) {
@@ -49,17 +54,17 @@ rl.question('Enter a web address:  ', (webAddress) => {
 	    }
 
 	    //Now send this string to Watson text to speech
-	    console.log('Generating audio file')
+	    console.log('Generating audio file \'webpage.wav\'')
 	    speech_params.text = textToSay
-	    text_to_speech.synthesize(speech_params).pipe(fs.createWriteStream('outputFromProgram.wav'));
+	    text_to_speech.synthesize(speech_params).pipe(fs.createWriteStream('webpage.wav'));
 	    
 	}
     });
-    
+   
+    // Close the readline module 
     rl.close()
 });
 
 
-//Requesting the voice audio
-//text_to_speech.synthesize(params).pipe(fs.createWriteStream('hello_world.wav'));
+
 
