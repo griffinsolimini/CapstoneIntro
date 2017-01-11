@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/griffinsolimini/CapstoneIntro/issues"
   },
-  "homepage": "https://github.com/griffinsolimini/CapstoneIntro#readme"
+  "homepage": "https://github.com/griffinsolimini/CapstoneIntro#readme",
+  "dependencies": {
+    "watson-developer-cloud": "^2.14.4"
+  }
 }
