@@ -74,30 +74,32 @@ rl.question('Enter a web address:  ', (webAddress) => {
 
     //Use this web address with alchemy
     alchemy_params.url = webAddress
-    alchemy_language.combined(alchemy_params, function (err, response) {
-        if (err) {
-            keywordError = 1
-            console.log('error:', err);
-    }
-	else {
-	    //Successful, so get the key words
-	    keywordsArr = response.keywords
-	    keywordsToSay = ""
-	    //Limit the number of words to be said to be 10 or less
-	    for(i = 0; i < keywordsArr.length && i < 10; i++) {
-		keywordsToSay += keywordsArr[i].text + '. '
-	    }
+    function callKeywordCode() {
+        alchemy_language.combined(alchemy_params, function (err, response) {
+            if (err) {
+                keywordError = 1
+                console.log('error:', err);
+            }
+            else {
+                //Successful, so get the key words
+                keywordsArr = response.keywords
+                keywordsToSay = ""
+                //Limit the number of words to be said to be 10 or less
+                for (i = 0; i < keywordsArr.length && i < 10; i++) {
+                    keywordsToSay += keywordsArr[i].text + '. '
+                }
 
-	    //Now send this string to Watson text to speech
-	    console.log('Generating audio file \'keywords.wav\'')
-        speech_params.text = keywordsToSay
-        console.log(keywordsToSay)
-	    text_to_speech.synthesize(speech_params).pipe(fs.createWriteStream('keywords.wav'));
-        console.log('Keywords file is generating!')
-        keywordError = 0
-        getCount()
-	}
-    });
+                //Now send this string to Watson text to speech
+                console.log('Generating audio file \'keywords.wav\'')
+                speech_params.text = keywordsToSay
+                console.log(keywordsToSay)
+                text_to_speech.synthesize(speech_params).pipe(fs.createWriteStream('keywords.wav'));
+                console.log('Keywords file is generating!')
+                keywordError = 0
+                getCount()
+            }
+        });
+    }
 
     console.log('Getting the text...')
     alchemy_language.text(alchemy_params, function (err, response) {
@@ -118,6 +120,7 @@ rl.question('Enter a web address:  ', (webAddress) => {
             text_to_speech.synthesize(speech_params).pipe(fs.createWriteStream('text.wav'));
             console.log('Text file is generating!')
             textError = 0
+            callKeywordCode()
         }
     });
    
